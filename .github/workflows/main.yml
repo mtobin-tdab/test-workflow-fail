@@ -7,6 +7,10 @@ on:
         description: 'Wait time in seconds'
         required: true
         default: '300'
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   test-cancellation:
