@@ -1,1 +1,41 @@
+name: Test Cancellation Behavior
 
+on:
+  workflow_dispatch:
+    inputs:
+      wait_time:
+        description: 'Wait time in seconds'
+        required: true
+        default: '300'
+
+jobs:
+  test-cancellation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Intentional failure
+        run: exit 1
+
+      - name: Wait step (runs on failure)
+        if: failure()
+        run: |
+          echo "Starting wait step. This will run for ${{ github.event.inputs.wait_time }} seconds."
+          echo "You can cancel the workflow during this time to test cancellation behavior."
+          end=$((SECONDS + ${{ github.event.inputs.wait_time }}))
+          while [ $SECONDS -lt $end ]; do
+            sleep 5
+            echo "Still waiting... $(( end - SECONDS )) seconds left"
+          done
+          echo "Wait step completed"
+
+      - name: Always run step
+        if: always()
+        run: |
+          echo "This step should always run, even after cancellation"
+          echo "Current status: ${{ job.status }}"
+
+      - name: Final step
+        run: |
+          echo "If you see this, the workflow was not cancelled"
