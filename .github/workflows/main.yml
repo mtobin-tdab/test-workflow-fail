@@ -23,7 +23,7 @@ jobs:
         run: exit 1
 
       - name: Wait step (runs on failure)
-        if: failure()
+        if: always()
         run: |
           sleep 300
 
