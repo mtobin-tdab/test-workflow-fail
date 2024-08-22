@@ -25,14 +25,7 @@ jobs:
       - name: Wait step (runs on failure)
         if: failure()
         run: |
-          echo "Starting wait step. This will run for ${{ github.event.inputs.wait_time }} seconds."
-          echo "You can cancel the workflow during this time to test cancellation behavior."
-          end=$((SECONDS + ${{ github.event.inputs.wait_time }}))
-          while [ $SECONDS -lt $end ]; do
-            sleep 5
-            echo "Still waiting... $(( end - SECONDS )) seconds left"
-          done
-          echo "Wait step completed"
+          sleep 300
 
       - name: Always run step
         if: always()
